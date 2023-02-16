@@ -1,20 +1,36 @@
-<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-  <h2>New user</h2>
-  <label for="firstName">First Name</label>
-  <input type="text" formControlName="firstName" name="firstName" />
-  <label for="lastName">Last Name</label>
-  <input type="text" formControlName="lastName" name="lastName" />
-  <label for="email">Email</label>
-  <input type="email" formControlName="email" name="email" />
-  <input type="submit" value="Send" />
-</form>
-<button (click)="getAllUsers()">Get all users</button>
-<section *ngIf="userCount > 0">
-  <div class="user-details" *ngFor="let user of users; let i = index">
-    <h3>{{ user.firstName }}</h3>
-    <h4>{{ user.lastName }}</h4>
-    <p>{{ user.email }}</p>
-    <button (click)="onDelete(i)">Delete user</button>
+<main>
+  <div class="pixela">
+    <form [formGroup]="recordForm" (ngSubmit)="onRecordSubmit()">
+      <h2>New record</h2>
+      <label for="date">Date</label>
+      <input type="text" formControlName="date" name="date" />
+      <label for="quantity">Quantity</label>
+      <input type="number" formControlName="quantity" name="quantity" />
+      <input type="submit" value="Add new record" />
+    </form>
   </div>
-</section>
-<button (click)="infos()">Infos</button>
+  <!-- <iframe src="https://pixe.la/v1/users/nicorichard/graphs/velo.html"></iframe> -->
+  <img src="https://pixe.la/v1/users/nicorichard/graphs/velo" alt="" />
+  <div class="test-content">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <h2>New user</h2>
+      <label for="firstName">First Name</label>
+      <input type="text" formControlName="firstName" name="firstName" />
+      <label for="lastName">Last Name</label>
+      <input type="text" formControlName="lastName" name="lastName" />
+      <label for="email">Email</label>
+      <input type="email" formControlName="email" name="email" />
+      <input type="submit" value="Send" [disabled]="!userForm.valid" />
+    </form>
+    <button (click)="getAllUsers()">Get all users</button>
+    <section *ngIf="userCount > 0">
+      <div class="user-details" *ngFor="let user of users; let i = index">
+        <h3>{{ user.firstName }}</h3>
+        <h4>{{ user.lastName }}</h4>
+        <p>{{ user.email }}</p>
+        <button (click)="onDelete(i)">Delete user</button>
+      </div>
+    </section>
+    <button (click)="infos()">Infos</button>
+  </div>
+</main>

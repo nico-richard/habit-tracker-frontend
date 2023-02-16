@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from './models/user';
 import { AppService } from './app.service';
 import { Subscription } from 'rxjs';
+import { RecordService } from './record.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.sass'],
 })
 export class AppComponent implements OnDestroy {
-  constructor(private appService: AppService) {}
+  constructor(
+    private appService: AppService,
+    private recordService: RecordService
+  ) {}
   private getSubscription: Subscription;
   private postSubscription: Subscription;
   private delSubscription: Subscription;
@@ -19,15 +23,15 @@ export class AppComponent implements OnDestroy {
 
   userForm = new FormGroup({
     firstName: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.minLength(3)],
       nonNullable: true,
     }),
     lastName: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.minLength(3)],
       nonNullable: true,
     }),
     email: new FormControl('', {
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.email],
       nonNullable: true,
     }),
   });
@@ -41,8 +45,8 @@ export class AppComponent implements OnDestroy {
       .subscribe((data: Object) => {
         console.log('user added from frontend : ' + JSON.stringify(data));
         this.userCount += 1;
-        this.userForm.reset();
       });
+    this.userForm.reset();
   }
 
   getAllUsers() {
@@ -69,5 +73,24 @@ export class AppComponent implements OnDestroy {
     this.getSubscription.unsubscribe();
     this.postSubscription.unsubscribe();
     this.delSubscription.unsubscribe();
+  }
+
+  recordForm = new FormGroup({
+    date: new FormControl('', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    quantity: new FormControl(0, {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+  });
+
+  onRecordSubmit() {
+    this.recordService
+      .recordActivity(this.recordForm.getRawValue())
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 }

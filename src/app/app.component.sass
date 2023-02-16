@@ -1,7 +1,17 @@
+main
+    display: flex
+    .pixela
+    .test-content
+        border: 1px solid black
+        padding: 5px
+        margin: 5px
+    iframe
+        width: 50%
 form
+    text-align: center
     display: flex
     flex-direction: column
-    width: 20%
+    width: 30%
     min-width: 10rem
     border: 1px solid #eee
     border-radius: 5px
@@ -14,12 +24,23 @@ form
         outline: none
         padding: 0.2rem
         &[type="submit"]
+            border: none
             margin-top: 0.5rem
             padding: 0.5rem
             background-color: #555
-            border: none
             color: #eee
             &:hover
                 background-color: #777
+                cursor: pointer
+            &:disabled
+                cursor: not-allowed
+                background-color: #555
+                color: #aaa
+                &:hover
+                    background-color: #555
+        &.ng-touched.ng-invalid
+            border: 2px solid red
+        &.ng-valid
+            border: 2px solid green
     h2
         margin: 0
