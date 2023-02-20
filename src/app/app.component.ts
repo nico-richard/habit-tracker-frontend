@@ -1,79 +1,32 @@
-import { Component, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { User } from './models/user';
-import { AppService } from './app.service';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { RecordService } from './record.service';
+import { Graph, Graphs } from './models/graph';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
 })
-export class AppComponent implements OnDestroy {
-  constructor(
-    private appService: AppService,
-    private recordService: RecordService
-  ) {}
-  private getSubscription: Subscription;
-  private postSubscription: Subscription;
-  private delSubscription: Subscription;
+export class AppComponent implements OnDestroy, OnInit {
+  constructor(private recordService: RecordService) {}
 
   title = 'Habit tracker';
+  graphs: any;
+  graphName = '';
 
-  userForm = new FormGroup({
-    firstName: new FormControl('', {
-      validators: [Validators.required, Validators.minLength(3)],
-      nonNullable: true,
-    }),
-    lastName: new FormControl('', {
-      validators: [Validators.required, Validators.minLength(3)],
-      nonNullable: true,
-    }),
-    email: new FormControl('', {
-      validators: [Validators.required, Validators.email],
-      nonNullable: true,
-    }),
-  });
-
-  users: User[] = [];
-  userCount = 0;
-
-  onSubmit() {
-    this.postSubscription = this.appService
-      .addUser(this.userForm.getRawValue())
-      .subscribe((data: Object) => {
-        console.log('user added from frontend : ' + JSON.stringify(data));
-        this.userCount += 1;
-      });
-    this.userForm.reset();
+  ngOnInit(): void {
+    this.recordService.getGraphs().subscribe((data) => {
+      this.graphs = data;
+      this.graphName = this.graphs['graphs'][0].name;
+    });
   }
-
-  getAllUsers() {
-    this.getSubscription = this.appService
-      .getUsers()
-      .subscribe((users: User[]) => {
-        this.users = users;
-        this.userCount = this.users.length;
-      });
-  }
-
-  onDelete(index: number) {
-    this.delSubscription = this.appService
-      .deleteUser(index)
-      .subscribe((data: string) => console.log(data));
-    this.userCount -= 1;
-  }
-
-  infos() {
-    console.log(this.users);
-  }
-
-  ngOnDestroy(): void {
-    this.getSubscription.unsubscribe();
-    this.postSubscription.unsubscribe();
-    this.delSubscription.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   recordForm = new FormGroup({
     date: new FormControl('', {
@@ -85,6 +38,42 @@ export class AppComponent implements OnDestroy {
       nonNullable: true,
     }),
   });
+
+  createGraphForm = new FormGroup({
+    id: new FormControl('', {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    name: new FormControl('', {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    unit: new FormControl('', {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    type: new FormControl('', {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+    color: new FormControl('shibafu', {
+      validators: Validators.required,
+      nonNullable: true,
+    }),
+  });
+
+  onCreateGraph() {
+    console.log(this.createGraphForm.getRawValue());
+    this.recordService
+      .createGraph(
+        this.createGraphForm.getRawValue().id,
+        this.createGraphForm.getRawValue().name,
+        this.createGraphForm.getRawValue().unit,
+        this.createGraphForm.getRawValue().type,
+        this.createGraphForm.getRawValue().color
+      )
+      .subscribe((data) => console.log(data));
+  }
 
   onRecordSubmit() {
     this.recordService
