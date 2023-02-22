@@ -1,18 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Record } from './models/record';
 import { environment } from 'src/environment/environment';
-import { Observable } from 'rxjs';
-import { Graph, Graphs } from './models/graph';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { GraphList } from './models/graph';
 
 @Injectable({
   providedIn: 'root',
 })
-export class RecordService {
+export class GraphService {
+  graphCount = new BehaviorSubject(0);
+
   constructor(private http: HttpClient) {}
+
   endPoint = 'https://pixe.la/v1';
   user = 'nicorichard';
-  graph = 'velo';
 
   headers = new HttpHeaders().set('X-USER-TOKEN', environment.xUserToken);
 
@@ -37,17 +39,26 @@ export class RecordService {
     );
   }
 
-  getGraphs() {
+  getGraphs(): Observable<GraphList> {
     const url = `${this.endPoint}/users/${this.user}/graphs`;
-    return this.http.get(url, { headers: this.headers });
+    return this.http.get<GraphList>(url, { headers: this.headers });
   }
 
-  recordActivity(data: Record) {
-    const url = `${this.endPoint}/users/${this.user}/graphs/${this.graph}`;
+  recordActivity(data: Record, graphName: string) {
+    const url = `${this.endPoint}/users/${this.user}/graphs/${graphName}`;
     return this.http.post(
       url,
       { date: data.date, quantity: data.quantity.toString() },
       { headers: this.headers }
     );
+  }
+
+  deleteGraph(
+    graphId: string
+  ): Observable<{ message: string; isSuccess: string }> {
+    const url = `${this.endPoint}/users/${this.user}/graphs/${graphId}`;
+    return this.http.delete<{ message: string; isSuccess: string }>(url, {
+      headers: this.headers,
+    });
   }
 }

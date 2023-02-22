@@ -1,0 +1,15 @@
+<h1>Graph list :</h1>
+<h2>There are {{graphCount}} graphs</h2>
+<div class="graph-list" *ngIf="graphList">
+  <div class="graph" *ngFor="let graph of graphList.graphs">
+    <div class="image-container">
+      <img
+        src="{{ 'https://pixe.la/v1/users/nicorichard/graphs/' + graph.id }}"
+        alt="image"
+        id="graph"
+      />
+    </div>
+    <label for="graph">{{ graph.name }}</label>
+    <button (click)="onDelete(graph.id)">X</button>
+  </div>
+</div>
