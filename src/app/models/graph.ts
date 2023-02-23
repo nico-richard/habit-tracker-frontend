@@ -1,4 +1,4 @@
-export interface GraphList {
+export interface Graphs {
   graphs: Graph[];
 }
 

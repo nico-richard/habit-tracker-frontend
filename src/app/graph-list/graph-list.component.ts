@@ -1,32 +1,37 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GraphService } from '../graph.service';
-import { GraphList } from '../models/graph';
+import { Graphs } from '../models/graph';
+import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-graph-list',
   templateUrl: './graph-list.component.html',
   styleUrls: ['./graph-list.component.sass'],
 })
-export class GraphListComponent implements OnInit, OnChanges {
+export class GraphListComponent implements OnInit {
   constructor(private graphService: GraphService) {}
 
-  graphList: GraphList;
+  graphList: Graphs;
   graphCount: number;
 
   ngOnInit(): void {
-    this.graphService.graphCount.subscribe((count: number) => {
-      this.graphCount = count;
+    this.graphService.graphList.subscribe((data: Graphs) => {
+      this.graphCount = data.graphs.length;
+      this.graphList = data;
     });
 
-    this.graphService.getGraphs().subscribe((graphList: GraphList) => {
-      this.graphList = graphList;
-      this.graphService.graphCount.next(this.graphList.graphs.length);
-    });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(`changes : ${changes}`);
-    console.log(`changes : ${changes}`);
+    this.graphService
+      .getGraphs()
+      .pipe(
+        catchError((err: Graphs) => {
+          window.location.reload();
+          throw err;
+        })
+      )
+      .subscribe((graphList: Graphs) => {
+        this.graphList = graphList;
+        this.graphService.graphList.next(this.graphList);
+      });
   }
 
   onDelete(index: string) {
@@ -35,9 +40,17 @@ export class GraphListComponent implements OnInit, OnChanges {
       console.log(response.message);
     });
     setTimeout(() => {
-      this.graphService.getGraphs().subscribe((graphList) => {
-        this.graphService.graphCount.next(graphList.graphs.length);
-      });
+      this.graphService
+        .getGraphs()
+        .pipe(
+          catchError((err: Graphs) => {
+            window.location.reload();
+            throw err;
+          })
+        )
+        .subscribe((data: Graphs) => {
+          this.graphService.graphList.next(data);
+        });
     }, 1000);
   }
 }

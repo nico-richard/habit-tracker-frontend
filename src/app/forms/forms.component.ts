@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { GraphService } from '../graph.service';
-import { GraphList } from '../models/graph';
+import { Graphs } from '../models/graph';
+import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-forms',
@@ -11,7 +12,7 @@ import { GraphList } from '../models/graph';
 export class FormsComponent implements OnInit {
   constructor(private graphService: GraphService) {}
 
-  graphList: GraphList;
+  graphList: Graphs;
 
   ngOnInit() {}
 
@@ -55,19 +56,25 @@ export class FormsComponent implements OnInit {
 
   onCreateGraph() {
     console.log(this.createGraphForm.getRawValue());
-    this.graphService
-      .createGraph(
-        this.createGraphForm.getRawValue().id,
-        this.createGraphForm.getRawValue().name,
-        this.createGraphForm.getRawValue().unit,
-        this.createGraphForm.getRawValue().type,
-        this.createGraphForm.getRawValue().color
-      )
-      .subscribe((data) => console.log(`onCreateGraph : ${data}`));
+    this.graphService.createGraph(
+      this.createGraphForm.getRawValue().id,
+      this.createGraphForm.getRawValue().name,
+      this.createGraphForm.getRawValue().unit,
+      this.createGraphForm.getRawValue().type,
+      this.createGraphForm.getRawValue().color
+    );
     setTimeout(() => {
-      this.graphService.getGraphs().subscribe((graphList) => {
-        this.graphService.graphCount.next(graphList.graphs.length);
-      });
+      this.graphService
+        .getGraphs()
+        .pipe(
+          catchError((err: Graphs) => {
+            window.location.reload();
+            throw err;
+          })
+        )
+        .subscribe((data: Graphs) => {
+          this.graphService.graphList.next(data);
+        });
     }, 1000);
   }
 
@@ -79,6 +86,12 @@ export class FormsComponent implements OnInit {
           quantity: this.recordForm.getRawValue().quantity,
         },
         this.recordForm.getRawValue().graphName
+      )
+      .pipe(
+        catchError((err: Graphs) => {
+          window.location.reload();
+          throw err;
+        })
       )
       .subscribe((data) => {
         console.log(`onRecordSubmit : ${data}`);

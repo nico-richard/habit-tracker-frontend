@@ -3,13 +3,13 @@ import { Injectable, OnInit } from '@angular/core';
 import { Record } from './models/record';
 import { environment } from 'src/environment/environment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { GraphList } from './models/graph';
+import { Graphs } from './models/graph';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GraphService {
-  graphCount = new BehaviorSubject(0);
+  graphList = new BehaviorSubject<Graphs>({ graphs: [] });
 
   constructor(private http: HttpClient) {}
 
@@ -39,9 +39,9 @@ export class GraphService {
     );
   }
 
-  getGraphs(): Observable<GraphList> {
+  getGraphs(): Observable<Graphs> {
     const url = `${this.endPoint}/users/${this.user}/graphs`;
-    return this.http.get<GraphList>(url, { headers: this.headers });
+    return this.http.get<Graphs>(url, { headers: this.headers });
   }
 
   recordActivity(data: Record, graphName: string) {
