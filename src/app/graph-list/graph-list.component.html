@@ -1,6 +1,6 @@
 <h1>Graph list :</h1>
-<h2>There are {{graphCount}} graphs</h2>
-<div class="graph-list" *ngIf="graphList">
+<h2>There are {{ graphCount }} graphs</h2>
+<!-- <div class="graph-list" *ngIf="graphList">
   <div class="graph" *ngFor="let graph of graphList.graphs">
     <div class="image-container">
       <img
@@ -12,4 +12,50 @@
     <label for="graph">{{ graph.name }}</label>
     <button (click)="onDelete(graph.id)">X</button>
   </div>
-</div>
+</div> -->
+
+<!-- <table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>name</th>
+      <th>unit</th>
+      <th>type</th>
+      <th>color</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let graph of graphList.graphs">
+      <td>{{ graph.id }}</td>
+      <td>{{ graph.name }}</td>
+      <td>{{ graph.unit }}</td>
+      <td>{{ graph.type }}</td>
+      <td>{{ graph.color }}</td>
+    </tr>
+  </tbody>
+</table> -->
+
+<table mat-table [dataSource]="graphList.graphs">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let graph">{{ graph.id }}</td>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let graph">{{ graph.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="unit">
+    <th mat-header-cell *matHeaderCellDef>Unit</th>
+    <td mat-cell *matCellDef="let graph">{{ graph.unit }}</td>
+  </ng-container>
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let graph">{{ graph.type }}</td>
+  </ng-container>
+  <ng-container matColumnDef="color">
+    <th mat-header-cell *matHeaderCellDef>Color</th>
+    <td mat-cell *matCellDef="let graph">{{ graph.color }}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

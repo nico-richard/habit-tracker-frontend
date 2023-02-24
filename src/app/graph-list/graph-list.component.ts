@@ -13,6 +13,7 @@ export class GraphListComponent implements OnInit {
 
   graphList: Graphs;
   graphCount: number;
+  displayedColumns = ['id', 'name', 'unit', 'type', 'color'];
 
   ngOnInit(): void {
     this.graphService.graphList.subscribe((data: Graphs) => {
@@ -23,7 +24,7 @@ export class GraphListComponent implements OnInit {
     this.graphService
       .getGraphs()
       .pipe(
-        catchError((err: Graphs) => {
+        catchError((err: Error) => {
           window.location.reload();
           throw err;
         })
@@ -43,7 +44,7 @@ export class GraphListComponent implements OnInit {
       this.graphService
         .getGraphs()
         .pipe(
-          catchError((err: Graphs) => {
+          catchError((err: Error) => {
             window.location.reload();
             throw err;
           })

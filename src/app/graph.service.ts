@@ -25,6 +25,7 @@ export class GraphService {
     type: string,
     color: string
   ) {
+    console.log('Create graph from service called');
     const url = `${this.endPoint}/users/${this.user}/graphs`;
     return this.http.post(
       url,

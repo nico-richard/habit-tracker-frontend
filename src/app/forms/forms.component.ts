@@ -56,23 +56,26 @@ export class FormsComponent implements OnInit {
 
   onCreateGraph() {
     console.log(this.createGraphForm.getRawValue());
-    this.graphService.createGraph(
-      this.createGraphForm.getRawValue().id,
-      this.createGraphForm.getRawValue().name,
-      this.createGraphForm.getRawValue().unit,
-      this.createGraphForm.getRawValue().type,
-      this.createGraphForm.getRawValue().color
-    );
+    this.graphService
+      .createGraph(
+        this.createGraphForm.getRawValue().id,
+        this.createGraphForm.getRawValue().name,
+        this.createGraphForm.getRawValue().unit,
+        this.createGraphForm.getRawValue().type,
+        this.createGraphForm.getRawValue().color
+      )
+      .subscribe((data) => console.log(`onCreateGraph: ${data}`));
     setTimeout(() => {
       this.graphService
         .getGraphs()
         .pipe(
-          catchError((err: Graphs) => {
+          catchError((err: Error) => {
             window.location.reload();
             throw err;
           })
         )
         .subscribe((data: Graphs) => {
+          console.log(data);
           this.graphService.graphList.next(data);
         });
     }, 1000);
@@ -88,7 +91,7 @@ export class FormsComponent implements OnInit {
         this.recordForm.getRawValue().graphName
       )
       .pipe(
-        catchError((err: Graphs) => {
+        catchError((err: Error) => {
           window.location.reload();
           throw err;
         })
