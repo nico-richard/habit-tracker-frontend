@@ -1,0 +1,17 @@
+<button (click)="onAllGraph()">All graphs</button>
+<form [formGroup]="createGraphForm" (ngSubmit)="onCreateGraph()">
+  <label for="graph-id">Graph id</label>
+  <input type="number" name="graph-id" formControlName="id" />
+  <label for="graph-name">Graph name</label>
+  <input type="text" name="graph-name" formControlName="name" />
+  <input type="submit" value="Create graph" />
+</form>
+<ul>
+  <li *ngFor="let graph of graphList">
+    <h3>Graph {{ graph.id }}</h3>
+    <p>
+      {{ graph.name }}
+      <span><button (click)="onDelete(graph.id)">X</button></span>
+    </p>
+  </li>
+</ul>

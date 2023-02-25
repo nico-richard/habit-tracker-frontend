@@ -3,11 +3,11 @@ export interface Graphs {
 }
 
 export interface Graph {
-  id: string;
+  id: number;
   name: string;
-  unit: string;
-  type: string;
-  color: string;
+  // unit: string;
+  // type: string;
+  // color: string;
   //   timezone: string;
   //   purgeCacheURLs: null;
   //   selfSufficient: string;

@@ -1,14 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Record } from './models/record';
 import { environment } from 'src/environment/environment';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Graphs } from './models/graph';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GraphService {
+export class PixelaService {
   graphList = new BehaviorSubject<Graphs>({ graphs: [] });
 
   constructor(private http: HttpClient) {}

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GraphService } from '../graph.service';
+import { PixelaService } from '../pixela.service';
 import { Graphs } from '../models/graph';
 import { catchError } from 'rxjs';
 
@@ -9,49 +9,31 @@ import { catchError } from 'rxjs';
   styleUrls: ['./graph-list.component.sass'],
 })
 export class GraphListComponent implements OnInit {
-  constructor(private graphService: GraphService) {}
+  constructor(private pixelaService: PixelaService) {}
 
   graphList: Graphs;
   graphCount: number;
   displayedColumns = ['id', 'name', 'unit', 'type', 'color'];
 
   ngOnInit(): void {
-    this.graphService.graphList.subscribe((data: Graphs) => {
+    this.pixelaService.graphList.subscribe((data: Graphs) => {
       this.graphCount = data.graphs.length;
       this.graphList = data;
     });
 
-    this.graphService
-      .getGraphs()
-      .pipe(
-        catchError((err: Error) => {
-          window.location.reload();
-          throw err;
-        })
-      )
-      .subscribe((graphList: Graphs) => {
-        this.graphList = graphList;
-        this.graphService.graphList.next(this.graphList);
-      });
+    this.pixelaService.getGraphs().subscribe((graphList: Graphs) => {
+      this.graphList = graphList;
+      this.pixelaService.graphList.next(this.graphList);
+    });
   }
 
   onDelete(index: string) {
     console.log(`Delete graph : ${index}`);
-    this.graphService.deleteGraph(index).subscribe((response) => {
+    this.pixelaService.deleteGraph(index).subscribe((response) => {
       console.log(response.message);
     });
-    setTimeout(() => {
-      this.graphService
-        .getGraphs()
-        .pipe(
-          catchError((err: Error) => {
-            window.location.reload();
-            throw err;
-          })
-        )
-        .subscribe((data: Graphs) => {
-          this.graphService.graphList.next(data);
-        });
-    }, 1000);
+    this.pixelaService.getGraphs().subscribe((data: Graphs) => {
+      this.pixelaService.graphList.next(data);
+    });
   }
 }

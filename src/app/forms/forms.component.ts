@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { GraphService } from '../graph.service';
+import { PixelaService } from '../pixela.service';
 import { Graphs } from '../models/graph';
 import { catchError } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { catchError } from 'rxjs';
   styleUrls: ['./forms.component.sass'],
 })
 export class FormsComponent implements OnInit {
-  constructor(private graphService: GraphService) {}
+  constructor(private pixelaService: PixelaService) {}
 
   graphList: Graphs;
 
@@ -56,7 +56,7 @@ export class FormsComponent implements OnInit {
 
   onCreateGraph() {
     console.log(this.createGraphForm.getRawValue());
-    this.graphService
+    this.pixelaService
       .createGraph(
         this.createGraphForm.getRawValue().id,
         this.createGraphForm.getRawValue().name,
@@ -66,7 +66,7 @@ export class FormsComponent implements OnInit {
       )
       .subscribe((data) => console.log(`onCreateGraph: ${data}`));
     setTimeout(() => {
-      this.graphService
+      this.pixelaService
         .getGraphs()
         .pipe(
           catchError((err: Error) => {
@@ -76,13 +76,13 @@ export class FormsComponent implements OnInit {
         )
         .subscribe((data: Graphs) => {
           console.log(data);
-          this.graphService.graphList.next(data);
+          this.pixelaService.graphList.next(data);
         });
     }, 1000);
   }
 
   onRecordSubmit() {
-    this.graphService
+    this.pixelaService
       .recordActivity(
         {
           date: this.recordForm.getRawValue().date,
